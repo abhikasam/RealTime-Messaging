@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Reflection;
 using ChatApplication.Code;
 using ChatApplication.Models.Chat;
+using Microsoft.AspNetCore.SignalR;
 
 namespace ChatApplication.Services
 {
@@ -11,12 +12,14 @@ namespace ChatApplication.Services
         private readonly IConfiguration configuration;
         private readonly ConcurrentDictionary<string, IConsumer<Ignore, string>> consumers;
         private readonly ChatContext chatContext;
+        private readonly IHubContext<ChatHub> hubContext;
 
-        public ConsumerManager(IConfiguration configuration, ChatContext chatContext)
+        public ConsumerManager(IConfiguration configuration, ChatContext chatContext, IHubContext<ChatHub> hubContext)
         {
             this.configuration = configuration;
             this.consumers = new ConcurrentDictionary<string, IConsumer<Ignore, string>>();
             this.chatContext = chatContext;
+            this.hubContext = hubContext;
         }
 
         public void CreateConsumer(string sender,string receiver)
@@ -46,6 +49,7 @@ namespace ChatApplication.Services
                 while (true)
                 {
                     var cr = consumer.Consume();
+                    hubContext.Clients.All.SendAsync("ReceiveMessage", topic, cr.Message.Value);
                     Console.WriteLine($"Consumed message '{cr.Message.Value}' at: '{cr.TopicPartitionOffset}' for topic '{topic}'.");
                 }
             }

@@ -1,3 +1,4 @@
+using ChatApplication.Code;
 using ChatApplication.Code.Collections;
 using ChatApplication.Models.Chat;
 using ChatApplication.Services;
@@ -24,6 +25,7 @@ ConventionRegistry.Register("CamelCase", new ConventionPack()
             }, _ => true);
 
 
+builder.Services.AddSignalR();
 builder.Services.AddScoped<ProducerService>();
 builder.Services.AddScoped<ConsumerManager>();
 
@@ -50,5 +52,7 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapRazorPages();
+
+app.MapHub<ChatHub>("/chathub");
 
 app.Run();

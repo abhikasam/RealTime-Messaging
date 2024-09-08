@@ -9,9 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageProducer", "MessageP
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageConsumer", "MessageConsumer\MessageConsumer.csproj", "{21BF9200-CE8C-460F-9D69-DCF7EBA63AEF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwoWayCommunication", "TwoWayCommunication\TwoWayCommunication.csproj", "{7DBF9B3F-527C-4301-A394-0F992BAA80F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TwoWayCommunication", "TwoWayCommunication\TwoWayCommunication.csproj", "{7DBF9B3F-527C-4301-A394-0F992BAA80F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApplication", "ChatApplication\ChatApplication.csproj", "{26791C72-B9B2-44EC-BB9F-6275E0D9E916}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatApplication", "ChatApplication\ChatApplication.csproj", "{26791C72-B9B2-44EC-BB9F-6275E0D9E916}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

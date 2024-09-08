@@ -1,3 +1,4 @@
+using ChatApplication.Code;
 using ChatApplication.Models.Chat;
 using ChatApplication.Models.Customer_Data;
 using Microsoft.AspNetCore.Mvc;
@@ -21,5 +22,12 @@ namespace ChatApplication.Pages
         {
             Customers = customerService.Get().Where(i=> !string.IsNullOrWhiteSpace(i.FirstName) || !string.IsNullOrWhiteSpace(i.LastName));
         }
+
+        public IActionResult OnGetMessages(string from,string to)
+        {
+            var topic=GuidExtensions.GenerateUniqueGuid(from,to).ToString();
+            return new JsonResult(chatService.GetMessages(topic));
+        }
+
     }
 }

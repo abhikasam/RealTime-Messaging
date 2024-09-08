@@ -1,4 +1,5 @@
 ﻿@page
+@using ChatApplication.Code
 @model ChatModel
 @{
     ViewData["Title"] = "Chat";
@@ -36,8 +37,11 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-6 text-center">
+    <div class="col-3 text-center">
         <button onclick="sendMessage()">Send</button>
+    </div>
+    <div class="col-3 text-center">
+        <button onclick="retrieveMessages()">Retrieve</button>
     </div>
 </div>
 
@@ -48,10 +52,13 @@
     <script type="text/javascript">
         var connection = new signalR.HubConnectionBuilder().withUrl("/chathub").build();
 
-        connection.on("ReceiveMessage", function (from,to, message) {
-            var li = document.createElement("li");
-            li.textContent = `${from} :  ${message}`;
-            document.getElementById("messagesList").appendChild(li);
+        connection.on("ReceiveMessage", function (from, to,message) {
+            var cfrom = document.getElementById("fromInput").value;
+            var cto = document.getElementById("toInput").value;
+            if ((cfrom === from.id && cto === to.id) || (cfrom == to.id && cto === from.id)) {
+                var li = document.createElement("li");
+                li.textContent = `${from.fullName} :  ${message}`;
+                document.getElementById("messagesList").appendChild(li);            }
         });
 
         connection.start().catch(function (err) {
@@ -63,10 +70,29 @@
             var to  = document.getElementById("toInput").value;
             var message = document.getElementById("messageInput").value;
             if(from!=to){
-                connection.invoke("SendMessage", from, to, message).catch(function (err) {
+                connection.invoke("SendMessage", from, to, message).then(function () {
+                    document.getElementById("messageInput").value=""
+                }).catch(function (err) {
                     return console.error(err.toString());
                 });
             }
         }
+
+        function retrieveMessages() {
+            var from = document.getElementById("fromInput").value;
+            var to = document.getElementById("toInput").value;
+            console.log(from,to)
+            $.ajax({
+                url: "/Chat?handler=Messages",
+                type: 'get',
+                data: {
+                    from:from,to:to
+                },
+                success: function (res) {
+                    console.log(res)
+                }
+            });
+        }
+
     </script>
 }

@@ -56,7 +56,7 @@ namespace ChatApplication.Services
                     var cr = consumer.Consume();
                     var sender = customerService.GetCustomerById(from);
                     var receiver = customerService.GetCustomerById(to);
-                    hubContext.Clients.All.SendAsync($"ReceiveMessage",sender,receiver,cr.Message.Value);
+                    hubContext.Clients.All.SendAsync($"ReceiveMessage-"+topic,sender,receiver,cr.Message.Value);
                     Console.WriteLine($"Consumed message '{cr.Message.Value}' at: '{cr.TopicPartitionOffset}' for topic '{topic}'.");
                 }
             }

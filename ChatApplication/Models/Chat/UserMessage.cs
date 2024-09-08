@@ -1,4 +1,6 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿using ChatApplication.Models.Customer_Data;
+using MongoDB.Bson.Serialization.Attributes;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ChatApplication.Models.Chat
 {
@@ -13,5 +15,7 @@ namespace ChatApplication.Models.Chat
         public string Topic { get; set; }
         public string Message { get; set; }
         public DateTime TimeStamp { get; set; }
+        public Customer FromCustomer { get; set; }
+        public Customer ToCustomer { get; set; }
     }
 }

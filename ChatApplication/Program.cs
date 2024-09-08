@@ -11,6 +11,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = builder.Configuration.GetConnectionString("Redis");
+});
+
 builder.Services.AddRazorPages()
     .AddNewtonsoftJson(options =>
     {
@@ -33,6 +38,8 @@ builder.Services.AddScoped<ConsumerManager>();
 builder.Services.AddCollections(builder.Configuration);
 
 builder.Services.AddMongoDbService();
+
+builder.Services.AddScoped<CustomerCache>();
 
 var app = builder.Build();
 

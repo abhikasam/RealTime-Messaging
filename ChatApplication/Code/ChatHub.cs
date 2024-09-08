@@ -19,7 +19,8 @@ namespace ChatApplication.Code
         {
             var sender = customerService.GetCustomerById(from);
             var receiver = customerService.GetCustomerById(to);
-            await Clients.All.SendAsync($"ReceiveMessage",sender,receiver, message);
+            var topic = GuidExtensions.GenerateUniqueGuid(from, to).ToString();
+            await Clients.All.SendAsync($"ReceiveMessage-"+topic,sender,receiver, message);
             await this.producerService.SendMessageAsync(from,to,message);
         }
     }

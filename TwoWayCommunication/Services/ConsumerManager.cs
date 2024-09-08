@@ -10,9 +10,9 @@ namespace TwoWayCommunication.Services
     {
         private readonly IConfiguration configuration;
         private readonly ConcurrentDictionary<string, IConsumer<Ignore, string>> consumers;
-        private readonly ChatContext chatContext;
+        private readonly ChatService chatContext;
 
-        public ConsumerManager(IConfiguration configuration, ChatContext chatContext)
+        public ConsumerManager(IConfiguration configuration, ChatService chatContext)
         {
             this.configuration = configuration;
             this.consumers = new ConcurrentDictionary<string, IConsumer<Ignore, string>>();

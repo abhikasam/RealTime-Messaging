@@ -11,10 +11,10 @@ namespace ChatApplication.Services
     {
         private readonly IConfiguration configuration;
         private readonly ConcurrentDictionary<string, IConsumer<Ignore, string>> consumers;
-        private readonly ChatContext chatContext;
+        private readonly ChatService chatContext;
         private readonly IHubContext<ChatHub> hubContext;
 
-        public ConsumerManager(IConfiguration configuration, ChatContext chatContext, IHubContext<ChatHub> hubContext)
+        public ConsumerManager(IConfiguration configuration, ChatService chatContext, IHubContext<ChatHub> hubContext)
         {
             this.configuration = configuration;
             this.consumers = new ConcurrentDictionary<string, IConsumer<Ignore, string>>();

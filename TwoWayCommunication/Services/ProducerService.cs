@@ -10,9 +10,9 @@ namespace TwoWayCommunication.Services
         private readonly IProducer<Null,string> producer;
         private readonly IConfiguration configuration;
         private readonly ILogger<ProducerService> logger;
-        private readonly ChatContext chatContext;
+        private readonly ChatService chatContext;
 
-        public ProducerService(IConfiguration configuration,ILogger<ProducerService> logger, ChatContext chatContext)
+        public ProducerService(IConfiguration configuration,ILogger<ProducerService> logger, ChatService chatContext)
         {
             this.configuration = configuration;
             this.logger = logger;

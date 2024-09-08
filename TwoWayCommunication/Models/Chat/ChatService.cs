@@ -5,10 +5,10 @@ using TwoWayCommunication.Code.Collections;
 
 namespace TwoWayCommunication.Models.Chat
 {
-    public class ChatContext
+    public class ChatService
     {
         private readonly IMongoCollection<UserMessage> messages;
-        public ChatContext(IOptions<ChatCollection> options)
+        public ChatService(IOptions<ChatCollection> options)
         {
             var context = new MongoClient(options.Value.ConnectionString);
             var database = context.GetDatabase(options.Value.DatabaseName);

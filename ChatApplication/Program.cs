@@ -1,5 +1,6 @@
 using ChatApplication.Code;
 using ChatApplication.Code.Collections;
+using ChatApplication.Models;
 using ChatApplication.Models.Chat;
 using ChatApplication.Services;
 using MongoDB.Bson.Serialization.Conventions;
@@ -31,8 +32,7 @@ builder.Services.AddScoped<ConsumerManager>();
 
 builder.Services.AddCollections(builder.Configuration);
 
-builder.Services.AddScoped<ChatContext>();
-
+builder.Services.AddMongoDbService();
 
 var app = builder.Build();
 

@@ -35,7 +35,7 @@ builder.Services.AddScoped<ConsumerManager>();
 
 builder.Services.AddCollections(builder.Configuration);
 
-builder.Services.AddScoped<ChatContext>();
+builder.Services.AddScoped<ChatService>();
 
 
 var app = builder.Build();

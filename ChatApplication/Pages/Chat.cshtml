@@ -56,67 +56,73 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js" integrity="sha512-7SRCYIJtR6F8ocwW7UxW6wGKqbSyqREDbfCORCbGLatU0iugBLwyOXpzhkPyHIFdBO0K2VCu57fvP2Twgx1o2A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script type="text/javascript">
         var connection = new signalR.HubConnectionBuilder().withUrl("/chathub").build();
-        connection.on("ReceiveMessage", function (from, to, message) {
-            var cfrom = document.getElementById("fromInput").value;
-            var cto = document.getElementById("toInput").value;
-            if ((cfrom === from.id && cto === to.id) || (cfrom == to.id && cto === from.id)) {
-                var li = document.createElement("li");
-                li.textContent = `${from.fullName} :  ${message}`;
-                document.getElementById("messagesList").appendChild(li);
-            }
+        $(document).ready(function () {
+            connection.start().catch(function (err) {
+                return console.error(err.toString());
+            });
         });
-        connection.start().catch(function (err) {
-            return console.error(err.toString());
-        });
+
         function sendMessage() {
-            var from = document.getElementById("fromInput").value;
-            var to = document.getElementById("toInput").value;
-            var message = document.getElementById("messageInput").value;
+            var from = $("#fromInput").val();
+            var to = $("#toInput").val();
+            var message = $("#messageInput").val();
             if (from != to) {
-                document.getElementById("messageInput").value = ""
-                connection.invoke("SendMessage", from, to, message).then(function () {
+                $("#messageInput").val("")
+                connection.invoke("SendMessage", from, to, message).then(function (res) {
+                    console.log(res)
                 }).catch(function (err) {
                     return console.error(err.toString());
                 });
             }
         }
+
         function retrieveMessages() {
-            var from = document.getElementById("fromInput").value;
-            var to = document.getElementById("toInput").value;
-            $.ajax({
-                url: "/Chat?handler=Messages",
-                type: 'get',
-                data: {
-                    from: from, to: to
-                },
-                success: function (res) {
-                    document.getElementById("messagesList").value=""
-                    var li = document.createElement("li");
-                    li.textContent = `${from.fullName} :  ${message}`;
-                    document.getElementById("messagesList").appendChild(li);
-                }
-            });
+            var from = $("#fromInput").val();
+            var to = $("#toInput").val();
+            if (from && to && from != to) {
+                $.ajax({
+                    url: "/Chat?handler=Messages",
+                    type: 'get',
+                    data: {
+                        from: from, to: to
+                    },
+                    success: function (res) {
+                        $('#messagesList').html('')
+                        for (let msg of res) {
+                            var li = $('<li></li>')
+                            li.html(`${msg.fromCustomer.fullName} :  ${msg.message}`)
+                            $("#messagesList").append(li)
+                        }
+                    }
+                });
+            }
         }
 
         function getTopic() {
             var from = document.getElementById("fromInput").value;
             var to = document.getElementById("toInput").value;
-            $.ajax({
-                url: "/Chat?handler=Topic",
-                type: 'get',
-                data: {
-                    from: from, to: to
-                },
-                success:function(res){
-                    let connections = Object.keys(connection.nt)
-                    connections.forEach(c => connection.off(c))
-                    connection.on("ReceiveMessage-" + res, function (from, to, message) {
-                        var li = document.createElement("li");
-                        li.textContent = `${from.fullName} :  ${message}`;
-                        document.getElementById("messagesList").appendChild(li);
-                    });
-                }
-            });
+            if (from && to && from != to) {
+                $.ajax({
+                    url: "/Chat?handler=Topic",
+                    type: 'get',
+                    data: {
+                        from: from, to: to
+                    },
+                    success: function (res) {
+                        $("#messagesList").html('')
+                        let connections = Object.keys(connection.nt)
+                        connections.forEach((c) => connection.off(c))
+                        connection.on("ReceiveMessage-" + res, function (from, to, message) {
+                            var li = $('<li></li>')
+                            li.html(`${from.fullName} :  ${message}`)
+                            $("#messagesList").append(li)
+                        });
+
+                        retrieveMessages()
+                    }
+                });
+            }
         }
+
     </script>
 }

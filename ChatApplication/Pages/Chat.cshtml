@@ -8,11 +8,11 @@
 <h1>Real-Time Chat</h1>
 
 <div class="row">
-    <div class="col-6">
+    <div class="col-md-6 col-sm-12">
         <div class="row">
             <div class="col-6">
                 <select id="fromInput" class="form-control" onchange="getTopic()">
-                    <option>-Select One-</option>
+                    <option value="">-Select One-</option>
                     @foreach (var item in Model.Customers)
                     {
                         <option value="@item.Id">
@@ -23,7 +23,7 @@
             </div>
             <div class="col-6">
                 <select id="toInput" class="form-control" onchange="getTopic()">
-                    <option>-Select One-</option>
+                    <option value="">-Select One-</option>
                     @foreach (var item in Model.Customers)
                     {
                         <option value="@item.Id">
@@ -47,8 +47,19 @@
             </div>
         </div>
     </div>
-    <div class="col-6">
-        <ul id="messagesList"></ul>
+    <div class="col-md-6 col-sm-12">
+        <div class="row text-decoration-underline">
+            <div class="col-6 text-start">
+                <div id="senderName">
+                </div>
+            </div>
+            <div class="col-6 text-end">
+                <div id="receiverName">
+                </div>
+            </div>
+        </div>
+        <div id="messagesList">
+        </div>
     </div>
 </div>
 
@@ -66,7 +77,7 @@
             var from = $("#fromInput").val();
             var to = $("#toInput").val();
             var message = $("#messageInput").val();
-            if (from != to) {
+            if (from != to && message) {
                 $("#messageInput").val("")
                 connection.invoke("SendMessage", from, to, message).then(function (res) {
                     console.log(res)
@@ -88,10 +99,14 @@
                     },
                     success: function (res) {
                         $('#messagesList').html('')
+                        let fromName = $('#fromInput option:selected').text().trim()
                         for (let msg of res) {
-                            var li = $('<li></li>')
-                            li.html(`${msg.fromCustomer.fullName} :  ${msg.message}`)
-                            $("#messagesList").append(li)
+                            let alignClass="text-end"
+                            if(fromName==msg.fromCustomer.fullName)
+                                alignClass="text-start"
+                            var div = $('<div class="'+alignClass+'"></div>')
+                            div.html(`${msg.message}`)
+                            $("#messagesList").append(div)
                         }
                     }
                 });
@@ -101,7 +116,7 @@
         function getTopic() {
             var from = document.getElementById("fromInput").value;
             var to = document.getElementById("toInput").value;
-            if (from && to && from != to) {
+            if (from.length && to.length && from != to) {
                 $.ajax({
                     url: "/Chat?handler=Topic",
                     type: 'get',
@@ -112,10 +127,18 @@
                         $("#messagesList").html('')
                         let connections = Object.keys(connection.nt)
                         connections.forEach((c) => connection.off(c))
-                        connection.on("ReceiveMessage-" + res, function (from, to, message) {
-                            var li = $('<li></li>')
-                            li.html(`${from.fullName} :  ${message}`)
-                            $("#messagesList").append(li)
+                        let fromName = $('#fromInput option:selected').text().trim()
+                        let toName = $('#toInput option:selected').text().trim()
+                        $('#senderName').html(fromName)
+                        $('#receiverName').html(toName)
+                        connection.on("ReceiveMessage-" + res, function (sender, receiver, message) {
+                            let alignClass = "text-end"
+                            console.log(fromName,sender)
+                            if (fromName == sender.fullName)
+                                alignClass = "text-start"
+                            var div = $('<div class="' + alignClass + '"></div>')
+                            div.html(`${message}`)
+                            $("#messagesList").append(div)
                         });
 
                         retrieveMessages()

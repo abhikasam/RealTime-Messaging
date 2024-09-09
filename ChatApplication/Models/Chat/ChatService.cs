@@ -29,7 +29,5 @@ namespace ChatApplication.Models.Chat
         {
             return messages.Find(i=>i.Topic==topic).ToList();
         }
-
-
     }
 }
